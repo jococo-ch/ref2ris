@@ -1,7 +1,6 @@
 name: Build
 permissions:
   contents: read
-  pull-requests: write
 
 on:
   push:
@@ -37,10 +36,13 @@ jobs:
       - name: Gradle cache
         uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
         with:
-          path: ~/.gradle
-          key: gradle-cache-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.kt*') }}
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/gradle-wrapper.properties', '**/*.gradle*', '**/*.versions.toml') }}-${{ hashFiles('**/*.kts') }}
           restore-keys: |
-            gradle-cache-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+            gradle-${{ runner.os }}-${{ hashFiles('**/gradle-wrapper.properties', '**/*.gradle*', '**/*.versions.toml') }}-
+            gradle-${{ runner.os }}-
 
       - name: Check with Gradle
-        run: ./gradlew check --no-daemon --info
+        run: ./gradlew check --no-daemon --warning-mode=all
