@@ -32,7 +32,7 @@ dependencies {
 }
 
 tasks {
-    val deleteOutFolderTask by registering(Delete::class) {
+    val deleteOutFolderTask = register<Delete>("deleteOutFolderTask") {
         delete("out")
     }
 
